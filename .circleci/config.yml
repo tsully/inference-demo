@@ -67,7 +67,7 @@ commands:
 
                     '''
             print("Writing config \n" + config)
-            with open('.circleci/continueconfig.yml', 'w') as fp:
+            with open('.circleci/continue-config.yml', 'w') as fp:
                 fp.write(config)
           shell: /usr/bin/env python3
 
@@ -86,3 +86,4 @@ workflows:
   inferred-workflow:
     jobs:
       - infer-config
+      
