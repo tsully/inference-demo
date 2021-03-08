@@ -17,15 +17,15 @@ orbs:
     node: circleci/node@4.1.0
 jobs:
     test:
-    docker:
-        - image: cimg/node:12.20.0
-    steps:
-        - checkout
-        - node/install-packages:
-            pkg-manager: {package_manager}
-        - run:
-            command: {test_script}
-            name: Run YARN tests
+        docker:
+            - image: cimg/node:12.20.0
+        steps:
+            - checkout
+            - node/install-packages:
+                pkg-manager: {package_manager}
+            - run:
+                command: {test_script}
+                name: Run YARN tests
 workflows:
     node-tests:
     jobs:
