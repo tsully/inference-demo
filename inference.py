@@ -1,8 +1,3 @@
-# Get the Package.json file
-# Parse the package.json
-# Find the user's test command
-# If the user is using yarn, use generated config with node orb commands
-# If user is using npm, use node orb job
 import json
 import os.path
 from os import path
