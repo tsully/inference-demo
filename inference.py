@@ -24,13 +24,12 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
-          command: react-scripts test
-          name: Run YARN tests
+          command: {package_manager} test
+          name: {package_manager} test
 workflows:
   node-tests:
     jobs:
-      - test
-        
+      - test        
         '''
 print("Writing config \n" + config)
 with open('.circleci/continue-config.yml', 'w') as fp:
