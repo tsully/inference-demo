@@ -1,46 +1,42 @@
-
 # Get the Package.json file
 # Parse the package.json
 # Find the user's test command
 # If the user is using yarn, use generated config with node orb commands
 # If user is using npm, use node orb job
 import json
+import os.path
+from os import path
 
 with open('package.json') as json_file:
     data = json.load(json_file)
     test_script = data['scripts']['test'].strip()
-    if test_script.find('yarn ') == 0:
-        config = '''
+
+    if path.isfile('yarn.lock') == True:
+        package_manager = 'yarn'
+    else:
+        package_manager = 'npm'
+    
+    config = f'''
 version: 2.1
 orbs:
-  node: circleci/node@4.1.0
+    node: circleci/node@4.1.0
 jobs:
-  test:
+    test:
     docker:
-      - image: cimg/node:12.20.0
+        - image: cimg/node:12.20.0
     steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: yarn
-      - run:
-          command: yarn run test
-          name: Run YARN tests
+        - checkout
+        - node/install-packages:
+            pkg-manager: {package_manager}
+        - run:
+            command: {test_script}
+            name: Run YARN tests
 workflows:
-  node-tests:
+    node-tests:
     jobs:
-      - test
+        - test
         
         '''
-    else:
-        config = '''
-version: 2.1
-orbs:
-  node: circleci/node@3.0.0
-workflows:
-  node-tests:
-    jobs:
-      - node/test
-
-        '''
+print("Writing config \n" + config)
 with open('.circleci/continue-config.yml', 'w') as fp:
     fp.write(config)
