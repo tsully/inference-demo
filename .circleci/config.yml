@@ -68,10 +68,10 @@ commands:
                     '''
             with open('.circleci/continueconfig.yml', 'w') as fp:
                 fp.write(config)
-    shell: /usr/bin/env python3
+          shell: /usr/bin/env python3
 
 jobs:
-  - infer-config:
+  infer-config:
       description: |
         Parse package.json and determine if user is using yarn or npm, and then generate appropriate config to test the application.
       executor: default
