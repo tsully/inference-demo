@@ -1,0 +1,87 @@
+version: 2.1
+setup: true
+orbs:
+  continuation: circleci/continuation@0.1.1
+
+
+executors:
+    default:
+        description: |
+            This is a sample executor using Docker and Python.
+        docker:
+            - image: cimg/python:<<parameters.tag>>
+        parameters:
+            tag:
+                default: "3.8"
+                description: |
+                    Pick a specific circleci/python image variant: https://hub.docker.com/r/cimg/python/tags
+                type: string
+
+commands:
+  infer-config:
+    steps:
+      - run:
+          name: generate-config
+          command: |+
+            # Get the Package.json file
+            # Parse the package.json
+            # Find the user's test command
+            # If the user is using yarn, use generated config with node orb commands
+            # If user is using npm, use node orb job
+            import json
+
+            with open('package.json') as json_file:
+                data = json.load(json_file)
+                test_script = data['scripts']['test'].strip()
+                if test_script.find('yarn ') == 0:
+                    config = '''
+            version: 2.1
+            orbs:
+              node: circleci/node@4.1.0
+            jobs:
+              test:
+                docker:
+                  - image: cimg/node:12.20.0
+                steps:
+                  - checkout
+                  - node/install-packages:
+                      pkg-manager: yarn
+                  - run:
+                      command: yarn run test
+                      name: Run YARN tests
+            workflows:
+              node-tests:
+                jobs:
+                  - test
+                    
+                    '''
+                else:
+                    config = '''
+            version: 2.1
+            orbs:
+              node: circleci/node@3.0.0
+            workflows:
+              node-tests:
+                jobs:
+                  - node/test
+
+                    '''
+            with open('.circleci/continueconfig.yml', 'w') as fp:
+                fp.write(config)
+    shell: /usr/bin/env python3
+
+jobs:
+  - infer-config:
+      description: |
+        Parse package.json and determine if user is using yarn or npm, and then generate appropriate config to test the application.
+      executor: default
+      steps:
+        - checkout
+        - infer-config
+        - continuation/continue:
+            configuration_path: .circleci/continue-config.yml
+
+workflows:
+  inferred-workflow:
+    jobs:
+      - infer-config
