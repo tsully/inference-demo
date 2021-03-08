@@ -66,6 +66,7 @@ commands:
                   - node/test
 
                     '''
+            print("Writing config \n" + config)
             with open('.circleci/continueconfig.yml', 'w') as fp:
                 fp.write(config)
           shell: /usr/bin/env python3
