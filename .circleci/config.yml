@@ -39,22 +39,22 @@ commands:
                 config = f'''
             version: 2.1
             orbs:
-                node: circleci/node@4.1.0
+              node: circleci/node@4.1.0
             jobs:
-                test:
-                    docker:
-                        - image: cimg/node:12.20.0
-                    steps:
-                        - checkout
-                        - node/install-packages:
-                            pkg-manager: {package_manager}
-                        - run:
-                            command: {test_script}
-                            name: Run YARN tests
+              test:
+                docker:
+                  - image: cimg/node:12.20.0
+                steps:
+                  - checkout
+                  - node/install-packages:
+                      pkg-manager: yarn
+                  - run:
+                      command: react-scripts test
+                      name: Run YARN tests
             workflows:
-                node-tests:
+              node-tests:
                 jobs:
-                    - test
+                  - test
                     
                     '''
             print("Writing config \n" + config)
