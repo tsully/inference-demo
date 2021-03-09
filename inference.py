@@ -22,7 +22,7 @@ jobs:
     steps:
       - checkout
       - node/install-packages:
-          pkg-manager: yarn
+          pkg-manager: {package_manager}
       - run:
           command: {package_manager} test
           name: {package_manager} test
